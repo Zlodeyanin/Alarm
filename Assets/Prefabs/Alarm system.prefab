@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5463726389130729531}
   - component: {fileID: 5463726389130729532}
   - component: {fileID: 5463726389130729533}
-  - component: {fileID: 5463726389130729529}
-  - component: {fileID: 5463726389130729528}
+  - component: {fileID: 4718013405328439337}
+  - component: {fileID: 3552433415213983502}
   m_Layer: 0
   m_Name: Alarm system
   m_TagString: Untagged
@@ -134,7 +134,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5463726389130729529
+--- !u!114 &4718013405328439337
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,22 +146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71dae473db57e804bb1a7685aa3da7df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _alarm:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5463726389130729528}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!82 &5463726389130729528
+  _audioSource: {fileID: 0}
+  _house: {fileID: 0}
+--- !u!82 &3552433415213983502
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,7 +159,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: ce8505991ebee0a4f9654689508b6c45, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1

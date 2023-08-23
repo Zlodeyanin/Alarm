@@ -1,74 +1,62 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
+
+[RequireComponent(typeof(Animator))]
 
 public class Alarm : MonoBehaviour
 {
-    [SerializeField] private UnityEvent _alarm;
     [SerializeField] private AudioSource _audioSource;
-    public bool IsAlarmOn { get; private set; } = false;
-    private Animator _animator;
-    private Coroutine _coroutine;
+    [SerializeField] private Penetration _house;
 
-    public event UnityAction Reached
+    private Animator _animator;
+    private bool _isPlaying = false;
+
+    private void Start()
     {
-        add => _alarm.AddListener(value);
-        remove => _alarm.RemoveListener(value);
+        _audioSource.volume = 0;
+        _audioSource.Play();
     }
 
-    void Start()
+    private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _audioSource.volume = 0;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void Update()
     {
-        if (IsAlarmOn)
-        {
-            return;
-        }
+        const string AnimatorParameter = "IsCrook";
 
-        if (collision.TryGetComponent<Player>(out Player player))
+        if (_house.IsPenetration == true && _isPlaying == false)
         {
-            StopAllCoroutines();
-            _coroutine = StartCoroutine(UpVolume());
-            IsAlarmOn = true;
-            _alarm.Invoke();
-            _animator.SetBool("IsCrook", true);
+            _animator.SetBool(AnimatorParameter, _house.IsPenetration);
+            StartCoroutine(ChangeVolume());
+        }
+        else
+        {
+            _animator.SetBool(AnimatorParameter, _house.IsPenetration);
+            StopCoroutine(ChangeVolume());
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private IEnumerator ChangeVolume(int maxVolume = 100)
     {
-        if(collision.TryGetComponent<Player>(out Player player))
-        {
-            StopAllCoroutines();
-            IsAlarmOn = false;
-            _alarm.Invoke();
-            _coroutine= StartCoroutine(DownVolume());
-        }
-    }
-
-    private IEnumerator UpVolume(int maxVolume = 100)
-    {
+        _isPlaying = true;
         var wait = new WaitForSeconds(1f);
+        float upVolumeValue = 0.04f;
+        float dawnVolumeValue = 0.05f;
 
         for (int i = 0; i < maxVolume; i++)
         {
-            _audioSource.volume += 0.04f;
-            yield return wait;
-        }
-    }
-
-    private IEnumerator DownVolume(int maxVolume = 100)
-    {
-        var wait = new WaitForSeconds(1f);
-
-        for (int i = maxVolume; i > 0; i--)
-        {
-            _audioSource.volume -= 0.09f;
-            yield return wait;
+            if (_house.IsPenetration == true)
+            {
+                _audioSource.volume += upVolumeValue;
+                yield return wait;
+            }
+            else
+            {
+                _audioSource.volume-= dawnVolumeValue;
+                yield return wait;
+            }
         }
     }
 }
