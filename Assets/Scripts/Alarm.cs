@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class Alarm : MonoBehaviour
 {
+    private const string _animatorParameter = "IsCrook";
+
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private Penetration _house;
 
     private Animator _animator;
+    private Coroutine _volumeChanger;
     private bool _isPlaying = false;
 
     private void Start()
     {
         _audioSource.volume = 0;
+        StartVolumeChanger();
         _audioSource.Play();
     }
 
@@ -22,39 +26,36 @@ public class Alarm : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    private void Update()
+    private void StartVolumeChanger()
     {
-        const string AnimatorParameter = "IsCrook";
-
-        if (_house.IsPenetration == true && _isPlaying == false)
+        if (_volumeChanger == null)
         {
-            _animator.SetBool(AnimatorParameter, _house.IsPenetration);
-            StartCoroutine(ChangeVolume());
-        }
-        else
-        {
-            _animator.SetBool(AnimatorParameter, _house.IsPenetration);
             StopCoroutine(ChangeVolume());
+            _isPlaying= false;
         }
+
+        _volumeChanger = StartCoroutine(ChangeVolume());
     }
 
-    private IEnumerator ChangeVolume(int maxVolume = 100)
+    private IEnumerator ChangeVolume(float maxVolume = 1f)
     {
         _isPlaying = true;
         var wait = new WaitForSeconds(1f);
         float upVolumeValue = 0.04f;
         float dawnVolumeValue = 0.05f;
 
-        for (int i = 0; i < maxVolume; i++)
+        while (_isPlaying == true) 
         {
             if (_house.IsPenetration == true)
             {
-                _audioSource.volume += upVolumeValue;
+                _animator.SetBool(_animatorParameter, _house.IsPenetration);
+                _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, maxVolume, upVolumeValue);
                 yield return wait;
             }
             else
             {
-                _audioSource.volume-= dawnVolumeValue;
+                _animator.SetBool(_animatorParameter, _house.IsPenetration);
+                _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, 0, dawnVolumeValue);
                 yield return wait;
             }
         }
