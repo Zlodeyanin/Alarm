@@ -40,24 +40,26 @@ public class Alarm : MonoBehaviour
     private IEnumerator ChangeVolume(float maxVolume = 1f)
     {
         _isPlaying = true;
-        var wait = new WaitForSeconds(1f);
-        float upVolumeValue = 0.04f;
-        float dawnVolumeValue = 0.05f;
+        float oneSecond = 1f;
+        var wait = new WaitForSeconds(oneSecond);
+        float targetVolume;
+        float valumeValueChange = 0.05f;        
 
         while (_isPlaying == true) 
         {
             if (_house.IsPenetration == true)
             {
                 _animator.SetBool(_animatorParameter, _house.IsPenetration);
-                _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, maxVolume, upVolumeValue);
-                yield return wait;
+                targetVolume = maxVolume;
             }
             else
             {
                 _animator.SetBool(_animatorParameter, _house.IsPenetration);
-                _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, 0, dawnVolumeValue);
-                yield return wait;
+                targetVolume = 0;
             }
+
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, valumeValueChange);
+            yield return wait;
         }
     }
 }
