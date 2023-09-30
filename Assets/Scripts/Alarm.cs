@@ -2,10 +2,9 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-
 public class Alarm : MonoBehaviour
 {
-    private const string _animatorParameter = "IsCrook";
+    public readonly int IsCrook = Animator.StringToHash(nameof(IsCrook));
 
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private Penetration _house;
@@ -28,33 +27,36 @@ public class Alarm : MonoBehaviour
 
     private void StartVolumeChanger()
     {
-        if (_volumeChanger == null)
+        if (_house != null)
         {
-            StopCoroutine(ChangeVolume());
-            _isPlaying= false;
+            _volumeChanger = StartCoroutine(ChangeVolume());          
         }
-
-        _volumeChanger = StartCoroutine(ChangeVolume());
+        else
+        {
+            StopCoroutine(_volumeChanger);
+            _isPlaying = false;
+        }
     }
 
     private IEnumerator ChangeVolume(float maxVolume = 1f)
     {
+
         _isPlaying = true;
         float oneSecond = 1f;
-        var wait = new WaitForSeconds(oneSecond);
         float targetVolume;
         float valumeValueChange = 0.05f;        
+        WaitForSeconds wait = new WaitForSeconds(oneSecond);
 
         while (_isPlaying == true) 
         {
             if (_house.IsPenetration == true)
             {
-                _animator.SetBool(_animatorParameter, _house.IsPenetration);
+                _animator.SetBool(IsCrook, _house.IsPenetration);
                 targetVolume = maxVolume;
             }
             else
             {
-                _animator.SetBool(_animatorParameter, _house.IsPenetration);
+                _animator.SetBool(IsCrook, _house.IsPenetration);
                 targetVolume = 0;
             }
 

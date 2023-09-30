@@ -6,7 +6,7 @@ public class SceneChanger : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {      
-        if (collision.TryGetComponent<Player>(out Player player))
+        if (collision.TryGetComponent(out Player player))
         {
             player.transform.position = _point;
         }

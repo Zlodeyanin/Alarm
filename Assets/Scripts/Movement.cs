@@ -4,41 +4,40 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class Movement : MonoBehaviour
 {
-    private const string _animatorParameter = "Speed";
+    public readonly int Speed = Animator.StringToHash(nameof(Speed));
+
+    [SerializeField] private float _playerSpeed;
 
     private Animator _animator;
     private SpriteRenderer _flip;
+    private float _zeroMove = 0;
 
-    void Start()
+    private void Start()
     {
         _animator = GetComponent<Animator>();
         _flip = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
+    private void Update()
     {
         float playerGo = 2f;
         float playerStay = 0;
-        float playerGoLeft = -0.005f;
-        float playerGoRight = 0.005f;
-        float playerTransformY = 0;
-        float playerTransformZ = 0;
 
         if (Input.GetKey(KeyCode.A))
         {
             _flip.flipX = false;
-            transform.Translate(playerGoLeft, playerTransformY, playerTransformZ);
-            _animator.SetFloat(_animatorParameter, playerGo);
+            transform.Translate(_playerSpeed * Time.deltaTime* -1, _zeroMove, _zeroMove);
+            _animator.SetFloat(Speed, playerGo);
         }
         else if (Input.GetKey(KeyCode.D))
         {
             _flip.flipX = true;
-            transform.Translate(playerGoRight, playerTransformY, playerTransformZ);
-            _animator.SetFloat(_animatorParameter, playerGo);
+            transform.Translate(_playerSpeed * Time.deltaTime, _zeroMove, _zeroMove);
+            _animator.SetFloat(Speed, playerGo);
         }
         else
         {
-            _animator.SetFloat(_animatorParameter, playerStay);
+            _animator.SetFloat(Speed, playerStay);
         }
     }
 }
