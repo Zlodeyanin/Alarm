@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Penetration : MonoBehaviour
+public class HomeInvasion : MonoBehaviour
 {
     public bool IsPenetration { get; private set; }
 

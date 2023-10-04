@@ -7,7 +7,7 @@ public class Alarm : MonoBehaviour
     public readonly int IsCrook = Animator.StringToHash(nameof(IsCrook));
 
     [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private Penetration _house;
+    [SerializeField] private HomeInvasion _house;
 
     private Animator _animator;
     private Coroutine _volumeChanger;
@@ -38,28 +38,21 @@ public class Alarm : MonoBehaviour
         }
     }
 
-    private IEnumerator ChangeVolume(float maxVolume = 1f)
+    private IEnumerator ChangeVolume(float maxVolume = 1f, float valumeValueChange = 0.05f)
     {
-
         _isPlaying = true;
-        float oneSecond = 1f;
-        float targetVolume;
-        float valumeValueChange = 0.05f;        
-        WaitForSeconds wait = new WaitForSeconds(oneSecond);
+        float volumeChangeTime = 1f;
+        float targetVolume;      
+        WaitForSeconds wait = new WaitForSeconds(volumeChangeTime);
 
         while (_isPlaying == true) 
         {
-            if (_house.IsPenetration == true)
-            {
-                _animator.SetBool(IsCrook, _house.IsPenetration);
-                targetVolume = maxVolume;
-            }
-            else
-            {
-                _animator.SetBool(IsCrook, _house.IsPenetration);
-                targetVolume = 0;
-            }
+            if (_house.IsPenetration == true)           
+                targetVolume = maxVolume;           
+            else           
+                targetVolume = 0;          
 
+            _animator.SetBool(IsCrook, _house.IsPenetration);
             _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, valumeValueChange);
             yield return wait;
         }
